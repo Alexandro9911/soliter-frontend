@@ -5,11 +5,10 @@ import Field from "@/entities/core/Field";
 import FieldComponent from "@/features/Field/FieldComponent";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import {GameSolver} from "@/entities/core/GameSolver";
 
 
 export default function GameLayout (){
-
-  const [ready,setReady] = useState(false);
 
   const [game, updateGame] = useState(new Game());
   const [step, setStep] = useState(0);
@@ -50,7 +49,8 @@ export default function GameLayout (){
   }
 
   const handleSolveClick = () => {
-    const result = game.solve() || {moves: [], remaining: 0};
+    const gameSolver : GameSolver = new GameSolver(game);
+    const result = gameSolver.solve() || {moves: [], remaining: 0};
     if (result.solution) {
       console.log("Полное решение найдено!");
       result.solution.forEach((move, i) => {
