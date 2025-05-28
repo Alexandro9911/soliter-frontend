@@ -1,5 +1,5 @@
 import './gameLayout.sass'
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import Game from "@/entities/game/Game";
 import Field from "@/entities/field/Field";
 import FieldComponent from "@/features/Field/FieldComponent";
@@ -7,50 +7,56 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {GameSolver} from "@/entities/gameSolver/GameSolver";
 import Button from "@/shared/components/Button/Button";
+import {GameStateManager} from "@/entities/gameStateManager/GameStateManager";
 
 
 export default function GameLayout (){
+  const gameRef = useRef(new Game());
+  const undoManagerRef = useRef(new GameStateManager());
+  const [board, setBoard] = useState(() => gameRef.current.getBoard());
+  const [updateFlag, setUpdateFlag] = useState(false); // Флаг для форсирования обновления
 
-  const [game, updateGame] = useState(new Game());
-  const [step, setStep] = useState(0);
-  const [board, setBoard] = useState(game.getBoard());
+  useState(() => {
+    undoManagerRef.current.saveState(board);
+  });
 
-  useEffect(() => {
-    setBoard(game.getBoard());
-  }, [step]);
+  const makeStep = useCallback((updatedBoard: Field[][]) => {
+    gameRef.current.setBoard(updatedBoard);
+    undoManagerRef.current.saveState(updatedBoard);
+    setBoard(updatedBoard);
+    setUpdateFlag(prev => !prev);
+  }, []);
 
-  const makeStep = (updatedBoard: any[]) => {
-    setStep((prevState) => prevState + 1);
-    setBoard(updatedBoard)
-  }
+  const undoHandler = useCallback(() => {
+    const prevState = undoManagerRef.current.getPrevState();
+    if (prevState) {
+      gameRef.current.setBoard(prevState);
+      setBoard(prevState);
+      setUpdateFlag(prev => !prev);
+    }
+  }, []);
 
-  const createGameFields = () => {
-    const listCols : any = [];
-    board.forEach((column: Field[], index) => {
-      listCols.push(createColumnElement(index,column))
-    })
+  const createGameFields = useCallback(() => {
     return (
-      <div className="list-cols">{listCols}</div>
-    )
-  }
-
-  const createColumnElement = (index: number,column : Field[]) => {
-    const res : any = [];
-
-    column.forEach((field: Field) => {
-      const keyField = `field_${field.getX()}:${field.getY()}`
-      res.push(<FieldComponent key={keyField} field={field} makeStep={makeStep} game={game}/>)
-    })
-
-    return (
-      <div className="column-field" key={index}>
-        {res}
+      <div className="list-cols">
+        {board.map((column, index) => (
+          <div className="column-field" key={`col-${index}`}>
+            {column.map(field => (
+              <FieldComponent
+                key={`field-${field.getX()}-${field.getY()}`}
+                field={field}
+                makeStep={makeStep}
+                game={gameRef.current}
+              />
+            ))}
+          </div>
+        ))}
       </div>
-    )
-  }
+    );
+  }, [board, updateFlag]);
 
   const handleSolveClick = () => {
-    const gameSolver : GameSolver = new GameSolver(game);
+    const gameSolver : GameSolver = new GameSolver(gameRef.current);
     const result = gameSolver.solve() || {moves: [], remaining: 0};
     if (result.solution) {
       console.log("Полное решение найдено!");
@@ -69,18 +75,18 @@ export default function GameLayout (){
 
   return (
     <div className="main-layout">
-      {(board )&&
-        <DndProvider backend={HTML5Backend}>
-          <div className="board">
-            {createGameFields()}
-          </div>
-        </DndProvider>
-      }
-      <Button
-        onClick={handleSolveClick}
-      >
+      <DndProvider backend={HTML5Backend}>
+        <div className="board">{createGameFields()}</div>
+      </DndProvider>
+      <Button onClick={handleSolveClick}>
         Решить автоматически
       </Button>
+      <Button
+        onClick={undoHandler}
+        disabled={!undoManagerRef.current.canUndo()}
+      >
+        Отменить ход
+      </Button>
     </div>
-  )
+  );
 }
