@@ -1,11 +1,12 @@
 import './gameLayout.sass'
 import React, {useEffect, useState} from "react";
-import Game from "@/entities/core/Game";
-import Field from "@/entities/core/Field";
+import Game from "@/entities/game/Game";
+import Field from "@/entities/field/Field";
 import FieldComponent from "@/features/Field/FieldComponent";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import {GameSolver} from "@/entities/core/GameSolver";
+import {GameSolver} from "@/entities/gameSolver/GameSolver";
+import Button from "@/shared/components/Button/Button";
 
 
 export default function GameLayout (){
@@ -75,9 +76,11 @@ export default function GameLayout (){
           </div>
         </DndProvider>
       }
-      <button
+      <Button
         onClick={handleSolveClick}
-      >Решить автоматически</button>
+      >
+        Решить автоматически
+      </Button>
     </div>
   )
 }

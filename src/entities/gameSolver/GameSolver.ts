@@ -1,7 +1,7 @@
-import Game from "@/entities/core/Game";
+import Game from "@/entities/game/Game";
 import {Point, Solution} from "@/entities/types/types";
-import Field from "@/entities/core/Field";
-import Chip from "@/entities/core/Chip";
+import Field from "@/entities/field/Field";
+import Chip from "@/entities/chip/Chip";
 
 export class GameSolver {
 

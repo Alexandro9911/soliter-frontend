@@ -1,9 +1,9 @@
 import './field.sass';
-import Game from "@/entities/core/Game";
-import Field from "@/entities/core/Field";
+import Game from "@/entities/game/Game";
+import Field from "@/entities/field/Field";
 import {useDrop} from "react-dnd";
 import {DRAG_TYPES} from "@/entities/constants";
-import Chip from "@/entities/core/Chip";
+import Chip from "@/entities/chip/Chip";
 import {Point} from "@/entities/types/types";
 import classNames from "classnames";
 import React from "react";

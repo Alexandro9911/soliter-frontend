@@ -1,7 +1,7 @@
 import './chip.sass';
 import {useDrag} from "react-dnd";
 import {DRAG_TYPES} from "@/entities/constants";
-import Chip from "@/entities/core/Chip";
+import Chip from "@/entities/chip/Chip";
 
 type Props = {
   chip: Chip | null

@@ -16,8 +16,8 @@ Y
  */
 
 import {EmptyCoords, Point, Solution} from "@/entities/types/types";
-import Field from "@/entities/core/Field";
-import Chip from "@/entities/core/Chip";
+import Field from "@/entities/field/Field";
+import Chip from "@/entities/chip/Chip";
 import {EMPTY_COORDS} from "@/entities/constants";
 
 export default class Game {

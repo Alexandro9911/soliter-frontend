@@ -1,4 +1,4 @@
-import Field from "@/entities/core/Field";
+import Field from "@/entities/field/Field";
 
 export type EmptyCoords = {
   [item: number]: number[]

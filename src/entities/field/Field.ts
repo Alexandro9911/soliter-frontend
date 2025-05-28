@@ -1,4 +1,4 @@
-import Chip from "@/entities/core/Chip";
+import Chip from "@/entities/chip/Chip";
 import {Point} from "@/entities/types/types";
 import {UniqueStringGenerator} from "@/utils/UniqueString/UniqueStringGenerator";
 
