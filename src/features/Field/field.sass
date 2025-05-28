@@ -1,0 +1,29 @@
+.field
+  width: 100px
+  height: 100px
+  font-size: 12px
+  display: flex
+  flex-flow: column
+  align-items: center
+  justify-content: center
+  border: 1px solid rgba(210, 186, 150, 0.65)
+  border-radius: 8px
+  box-sizing: border-box
+  -moz-box-sizing: border-box
+  -webkit-box-sizing: border-box
+  background: rgba(210, 186, 150, 0.65)
+
+  &__content
+    display: flex
+
+.field_over-success
+  background: #597c21
+
+.field_over-wrong
+  background: #7e332a
+
+.field_disabled
+  border: unset
+  background: unset
+  .field__content
+    display: none
