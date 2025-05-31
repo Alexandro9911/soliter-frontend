@@ -356,4 +356,12 @@ export default class Game {
     }
     return count;
   }
+
+
+  public restartGame = () => {
+    const newBoard = this.initBoard();
+    this.setBoard(newBoard)
+    return newBoard;
+  }
+
 }
