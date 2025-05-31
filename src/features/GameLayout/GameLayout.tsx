@@ -1,86 +1,76 @@
 import './gameLayout.sass'
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import Game from "@/entities/game/Game";
 import Field from "@/entities/field/Field";
 import FieldComponent from "@/features/Field/FieldComponent";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import {GameSolver} from "@/entities/gameSolver/GameSolver";
-import Button from "@/shared/components/Button/Button";
+import {GameStateManager} from "@/entities/gameStateManager/GameStateManager";
+import RightMenu from "@/widgets/menu/rightMenu/RightMenu";
+import MenuRow from "@/widgets/menu/menuRow/MenuRow";
+import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
+import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
 
 
 export default function GameLayout (){
+  const gameRef = useRef(new Game());
+  const undoManagerRef = useRef(new GameStateManager());
+  const [board, setBoard] = useState(() => gameRef.current.getBoard());
+  const [updateFlag, setUpdateFlag] = useState(false); // Флаг для форсирования обновления
 
-  const [game, updateGame] = useState(new Game());
-  const [step, setStep] = useState(0);
-  const [board, setBoard] = useState(game.getBoard());
+  useState(() => {
+    undoManagerRef.current.saveState(board);
+  });
 
-  useEffect(() => {
-    setBoard(game.getBoard());
-  }, [step]);
+  const makeStep = useCallback((updatedBoard: Field[][]) => {
+    gameRef.current.setBoard(updatedBoard);
+    undoManagerRef.current.saveState(updatedBoard);
+    setBoard(updatedBoard);
+    setUpdateFlag(prev => !prev);
+  }, []);
 
-  const makeStep = (updatedBoard: any[]) => {
-    setStep((prevState) => prevState + 1);
-    setBoard(updatedBoard)
-  }
-
-  const createGameFields = () => {
-    const listCols : any = [];
-    board.forEach((column: Field[], index) => {
-      listCols.push(createColumnElement(index,column))
-    })
-    return (
-      <div className="list-cols">{listCols}</div>
-    )
-  }
-
-  const createColumnElement = (index: number,column : Field[]) => {
-    const res : any = [];
-
-    column.forEach((field: Field) => {
-      const keyField = `field_${field.getX()}:${field.getY()}`
-      res.push(<FieldComponent key={keyField} field={field} makeStep={makeStep} game={game}/>)
-    })
-
-    return (
-      <div className="column-field" key={index}>
-        {res}
-      </div>
-    )
-  }
-
-  const handleSolveClick = () => {
-    const gameSolver : GameSolver = new GameSolver(game);
-    const result = gameSolver.solve() || {moves: [], remaining: 0};
-    if (result.solution) {
-      console.log("Полное решение найдено!");
-      result.solution.forEach((move, i) => {
-        console.log(`${i+1}. (${move.from.x},${move.from.y}) -> (${move.to.x},${move.to.y})`);
-      });
-    } else if (result.partialSolution) {
-      console.log(`Лучшее частичное решение`);
-      result.partialSolution.forEach((move, i) => {
-        console.log(`${i+1}. (${move.from.x},${move.from.y}) -> (${move.to.x},${move.to.y})`);
-      });
-    } else {
-      console.log("Решение не найдено");
+  const undoHandler = useCallback(() => {
+    const prevState = undoManagerRef.current.getPrevState();
+    if (prevState) {
+      gameRef.current.setBoard(prevState);
+      setBoard(prevState);
+      setUpdateFlag(prev => !prev);
     }
-  }
+  }, []);
+
+  const createGameFields = useCallback(() => {
+    return (
+      <div className="list-cols">
+        {board.map((column, index) => (
+          <div className="column-field" key={`col-${index}`}>
+            {column.map(field => (
+              <FieldComponent
+                key={`field-${field.getX()}-${field.getY()}`}
+                field={field}
+                makeStep={makeStep}
+                game={gameRef.current}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }, [board, updateFlag]);
 
   return (
     <div className="main-layout">
-      {(board )&&
-        <DndProvider backend={HTML5Backend}>
-          <div className="board">
-            {createGameFields()}
-          </div>
-        </DndProvider>
-      }
-      <Button
-        onClick={handleSolveClick}
-      >
-        Решить автоматически
-      </Button>
+      <DndProvider backend={HTML5Backend}>
+        <div className="board">{createGameFields()}</div>
+      </DndProvider>
+      <RightMenu>
+        <MenuRow>
+          <SolveGameButton gameRef={gameRef}/>
+          <UndoMoveButton
+            undoHandler={undoHandler}
+            undoManagerRef={undoManagerRef}
+          />
+        </MenuRow>
+      </RightMenu>
     </div>
-  )
+  );
 }

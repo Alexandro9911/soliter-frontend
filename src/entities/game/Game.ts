@@ -22,7 +22,7 @@ import {EMPTY_COORDS} from "@/entities/constants";
 
 export default class Game {
 
-  private board: any[] = [];
+  private board: Field[][] = [];
   constructor() {
     this.board = this.initBoard()
   }
@@ -32,7 +32,7 @@ export default class Game {
    * Исползуется в начале игры.
    */
   private initBoard = () => {
-    let rows : any[] = [];
+    let rows : Field[][] = [];
     for (let x = 0; x < 7; x++) {
       let col : Field[] = [];
       for(let y = 0; y < 7; y++) {
@@ -61,12 +61,16 @@ export default class Game {
     return this.board;
   }
 
+  public setBoard = (board: Field[][]) => {
+    this.board = board
+  }
+
   /**
    * Делает ход после выполнения всех проверок.
    * @param chip - фишка которая делает ход
    * @param targetField - поле куда фишка делает ход.
    */
-  public moveChip = (chip: Chip, targetField: Field) : any[] => {
+  public moveChip = (chip: Chip, targetField: Field) : Field[][] => {
     const startField = this.getFieldByChip(chip)
     const coordStart : Point = {
       x: startField.getX(),
