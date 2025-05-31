@@ -72,7 +72,7 @@ export class GameSolver {
       return;
     }
 
-    const remainingChips = this.getRemainingChipsCount(board);
+    const remainingChips = this.game.getRemainingChipsCount(board);
 
     // Обновляем лучшее решение, если нашли вариант с меньшим количеством фишек
     if (remainingChips < this.bestSolution.remaining) {
@@ -182,24 +182,5 @@ export class GameSolver {
         return newField;
       })
     );
-  }
-
-
-  /**
-   * Считает количество оставшихся фишек.
-   * @param board
-   * @private
-   */
-  private getRemainingChipsCount(board: Field[][]): number {
-    let count = 0;
-    for (let x = 0; x < 7; x++) {
-      for (let y = 0; y < 7; y++) {
-        const field = board[x]?.[y];
-        if (field && !field.getIsDisabled() && field.hasChip()) {
-          count++;
-        }
-      }
-    }
-    return count;
   }
 }

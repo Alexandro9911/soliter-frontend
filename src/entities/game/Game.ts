@@ -15,7 +15,7 @@
 Y
  */
 
-import {EmptyCoords, Point, Solution} from "@/entities/types/types";
+import {EmptyCoords, Point, Solution, StepResult} from "@/entities/types/types";
 import Field from "@/entities/field/Field";
 import Chip from "@/entities/chip/Chip";
 import {EMPTY_COORDS} from "@/entities/constants";
@@ -70,7 +70,7 @@ export default class Game {
    * @param chip - фишка которая делает ход
    * @param targetField - поле куда фишка делает ход.
    */
-  public moveChip = (chip: Chip, targetField: Field) : Field[][] => {
+  public moveChip = (chip: Chip, targetField: Field) : StepResult => {
     const startField = this.getFieldByChip(chip)
     const coordStart : Point = {
       x: startField.getX(),
@@ -88,10 +88,9 @@ export default class Game {
       eatableField?.resetFieldChip();
     }
     const hasMovements = this.hasPossibleMoves(this.board);
-    if(!hasMovements){
-      console.log('Это тупик')
-    }
-    return this.board;
+    const remainingChips = this.getRemainingChipsCount(this.board);
+    const isWin = remainingChips == 1;
+    return {board: this.board, isEnd: !hasMovements, isWin: isWin, remainingChips: remainingChips };
   }
 
   /**
@@ -337,5 +336,24 @@ export default class Game {
 
     const midPoint = this.eatableChipCoords(start, direction);
     return board[midPoint.x][midPoint.y].hasChip();
+  }
+
+
+  /**
+   * Считает количество оставшихся фишек.
+   * @param board
+   * @private
+   */
+  public getRemainingChipsCount(board: Field[][]): number {
+    let count = 0;
+    for (let x = 0; x < 7; x++) {
+      for (let y = 0; y < 7; y++) {
+        const field = board[x]?.[y];
+        if (field && !field.getIsDisabled() && field.hasChip()) {
+          count++;
+        }
+      }
+    }
+    return count;
   }
 }
