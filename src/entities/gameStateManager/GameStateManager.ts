@@ -9,7 +9,6 @@ export class GameStateManager {
     // Удаляем будущие состояния если мы сделали undo
     this.history = this.history.slice(0, this.currentIndex + 1);
 
-    // Сохраняем глубокую копию
     this.history.push(this.deepCopyBoard(board));
     this.currentIndex = this.history.length - 1;
   }
