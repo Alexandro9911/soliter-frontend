@@ -20,3 +20,10 @@ export type Solution = {
   }[] | null,
   stuckPosition?: Field[][]
 }
+
+export type StepResult = {
+  board: Field[][],
+  isEnd: boolean,
+  isWin: boolean,
+  remainingChips: number
+}

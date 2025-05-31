@@ -13,7 +13,6 @@ type Props = {
   game: Game,
   field: Field,
   makeStep: Function;
-
 }
 
 export default function FieldComponent(
@@ -21,7 +20,6 @@ export default function FieldComponent(
     game,
     field,
     makeStep,
-
   } : Props
 ){
 

@@ -10,6 +10,7 @@ import RightMenu from "@/widgets/menu/rightMenu/RightMenu";
 import MenuRow from "@/widgets/menu/menuRow/MenuRow";
 import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
 import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
+import {StepResult} from "@/entities/types/types";
 
 
 export default function GameLayout (){
@@ -22,7 +23,9 @@ export default function GameLayout (){
     undoManagerRef.current.saveState(board);
   });
 
-  const makeStep = useCallback((updatedBoard: Field[][]) => {
+  const makeStep = useCallback((stepRes : StepResult) => {
+    console.log(stepRes.isEnd, stepRes.remainingChips, stepRes.isWin)
+    const updatedBoard = stepRes.board
     gameRef.current.setBoard(updatedBoard);
     undoManagerRef.current.saveState(updatedBoard);
     setBoard(updatedBoard);
