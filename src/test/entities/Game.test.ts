@@ -304,4 +304,51 @@ describe('Game', () => {
 
     expect(result).toBe(false);
   });
+  test('Рестарт игры. Проверка что возвращает', () => {
+    const newBoard = game.restartGame();
+
+    expect(newBoard.length).toBe(7);
+    expect(newBoard[0].length).toBe(7);
+
+    let chipCount = 0;
+    for (let x = 0; x < 7; x++) {
+      for (let y = 0; y < 7; y++) {
+        if (newBoard[x][y].hasChip()) chipCount++;
+      }
+    }
+    expect(chipCount).toBe(32);
+  });
+
+  test('Рестарт игры. Проверка состояний фишек', () => {
+    const board = game.getBoard();
+    board[3][3].setChip(new Chip({ x: 3, y: 3 }));
+    const newBoard = game.restartGame();
+
+    expect(newBoard[3][3].hasChip()).toBe(false);
+    expect(game.getBoard()[3][3].hasChip()).toBe(false);
+  });
+
+  test('Проверка на разные доски', () => {
+    const firstBoard = game.restartGame();
+    const secondBoard = game.restartGame();
+
+    expect(firstBoard).not.toBe(secondBoard);
+    expect(firstBoard[0][0]).not.toBe(secondBoard[0][0]);
+  });
+
+
+  test('Рестарт игры. Проверка полей', () => {
+    // Изменяем несколько полей
+    const board = game.getBoard();
+    board[0][2].resetFieldChip();
+    board[3][3].setChip(new Chip({ x: 3, y: 3 }));
+
+    // Перезапускаем
+    game.restartGame();
+    const newBoard = game.getBoard()
+
+    // Проверяем что поля вернулись в исходное состояние
+    expect(newBoard[0][2].hasChip()).toBe(true); // Должна быть фишка
+    expect(newBoard[3][3].hasChip()).toBe(false); // Центр должен быть пустым
+  });
 });
