@@ -11,6 +11,7 @@ import MenuRow from "@/widgets/menu/menuRow/MenuRow";
 import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
 import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
 import {StepResult} from "@/entities/types/types";
+import RestartGameButton from "@/features/RestartGameButton/RestartGameButton";
 
 
 export default function GameLayout (){
@@ -40,6 +41,13 @@ export default function GameLayout (){
       setUpdateFlag(prev => !prev);
     }
   }, []);
+
+  const restartGameHandler = useCallback(() => {
+    const updatedBoard = gameRef.current.restartGame()
+    gameRef.current.setBoard(updatedBoard);
+    setBoard(updatedBoard);
+    setUpdateFlag(prev => !prev);
+  }, [])
 
   const createGameFields = useCallback(() => {
     return (
@@ -72,6 +80,9 @@ export default function GameLayout (){
             undoHandler={undoHandler}
             undoManagerRef={undoManagerRef}
           />
+        </MenuRow>
+        <MenuRow>
+          <RestartGameButton restartGameHandler={restartGameHandler}/>
         </MenuRow>
       </RightMenu>
     </div>
