@@ -6,7 +6,6 @@ export default class Chip {
   private chipX: number;
   private chipY: number;
 
-  private taken: boolean;
   private id: string;
 
   constructor (point: Point) {
@@ -14,16 +13,11 @@ export default class Chip {
 
     this.chipX = point.x;
     this.chipY = point.y;
-    this.taken = false;
     this.id = generator.generate(10);
   }
 
   public getId(){
     return this.id;
-  }
-
-  public setTaken(){
-    this.taken = true;
   }
 
   public setPosition(position: Point){

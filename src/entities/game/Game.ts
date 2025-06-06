@@ -328,7 +328,6 @@ export default class Game {
       return false;
     }
 
-    // Проверка что есть фишка для "прыжка"
     const direction = this.getDirection(start, end);
     if (!direction) {
       return false;

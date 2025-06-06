@@ -30,7 +30,6 @@ export class GameStateManager {
         if (field.hasChip()) {
           const chip = field.getChip()!;
           const newChip = new Chip(chip.getPosition());
-          if ((chip as any).taken) (newChip as any).taken = true;
           newField.setChip(newChip);
         }
         return newField;
