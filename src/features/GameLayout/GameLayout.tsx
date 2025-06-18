@@ -12,6 +12,7 @@ import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
 import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
 import {StepResult} from "@/entities/types/types";
 import RestartGameButton from "@/features/RestartGameButton/RestartGameButton";
+import BoardImage from '@/images/game-back.png';
 
 
 export default function GameLayout (){
@@ -70,9 +71,16 @@ export default function GameLayout (){
 
   return (
     <div className="main-layout">
-      <DndProvider backend={HTML5Backend}>
-        <div className="board">{createGameFields()}</div>
-      </DndProvider>
+      <div className="main-layout__game">
+        <DndProvider backend={HTML5Backend}>
+          <div className="game-board">
+            <div className="game-board__background">
+              <img src={BoardImage}/>
+            </div>
+            <div className="board">{createGameFields()}</div>
+          </div>
+        </DndProvider>
+      </div>
       <RightMenu>
         <MenuRow>
           <SolveGameButton gameRef={gameRef}/>

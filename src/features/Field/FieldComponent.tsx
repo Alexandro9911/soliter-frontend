@@ -59,7 +59,7 @@ export default function FieldComponent(
           <ChipComponent chip={field.getChip()} />
         }
       </div>
-      {`${field.getX()}, ${field.getY()}`}
+      {/*{`${field.getX()}, ${field.getY()}`}*/}
     </div>
     )
   )

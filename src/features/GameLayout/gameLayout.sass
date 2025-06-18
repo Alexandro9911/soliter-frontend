@@ -1,5 +1,6 @@
 body
   margin: unset !important
+  background: rgba(0, 0, 0, 0.1)
 
 .main-layout
   display: flex
@@ -7,9 +8,14 @@ body
   padding: 8px
   gap: 12px
 
+  &__game
+    //position: relative
+    width: auto
+
+
 
 .board
-  background: #406b52
+  background: transparent
   padding: 24px
   width: max-content
   border-radius: 16px
@@ -23,3 +29,24 @@ body
   display: flex
   flex-flow: column
   gap: 8px
+
+.game-board
+  display: block
+  &__background
+    position: absolute
+    //
+    img
+      overflow: unset !important
+      overflow-clip-margin: unset !important
+      width: 700px
+      height: 700px
+      //position: absolute
+      //top: 0
+      //left: 0
+
+
+  .board
+    width: 700px
+    position: relative
+    top: 30px
+    left: 40px
