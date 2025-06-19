@@ -9,9 +9,11 @@ import RightMenu from "@/widgets/menu/rightMenu/RightMenu";
 import MenuRow from "@/widgets/menu/menuRow/MenuRow";
 import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
 import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
-import {StepResult} from "@/entities/types/types";
+import {Solution, StepResult} from "@/entities/types/types";
 import RestartGameButton from "@/features/RestartGameButton/RestartGameButton";
 import BoardImage from '@/images/game-back.png';
+import InstructionsButton from "@/features/InstructionsButton/InstructionsButton";
+import Chip from "@/entities/chip/Chip";
 
 
 export default function GameLayout (){
@@ -68,6 +70,35 @@ export default function GameLayout (){
     );
   }, [board, updateFlag]);
 
+  const solveGameHandler = async (res: Solution) => {
+    const listSteps = res.solution ? res.solution : res.partialSolution;
+
+    if (!listSteps) {
+      return;
+    }
+
+    for (let index = 0; index < listSteps.length; index++) {
+      const item = listSteps[index];
+      const startCoords = item.from;
+      const targetCoords = item.to;
+      const board = gameRef.current.getBoard();
+
+      const movedChip = board[startCoords.x][startCoords.y].getChip();
+      const targetField = board[targetCoords.x][targetCoords.y];
+      const resStep = gameRef.current.moveChip(movedChip as Chip, targetField);
+
+      const updatedBoard = resStep.board;
+      gameRef.current.setBoard(updatedBoard);
+      undoManagerRef.current.saveState(updatedBoard);
+      setBoard(updatedBoard);
+      setUpdateFlag(prev => !prev);
+
+      if (index < listSteps.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+  };
+
   return (
     <div className="main-layout">
       <div className="main-layout__game">
@@ -82,14 +113,19 @@ export default function GameLayout (){
       </div>
       <RightMenu>
         <MenuRow>
-          <SolveGameButton gameRef={gameRef}/>
+          <RestartGameButton restartGameHandler={restartGameHandler}/>
+        </MenuRow>
+        <MenuRow>
           <UndoMoveButton
             undoHandler={undoHandler}
             undoManagerRef={undoManagerRef}
           />
         </MenuRow>
         <MenuRow>
-          <RestartGameButton restartGameHandler={restartGameHandler}/>
+          <SolveGameButton gameRef={gameRef} callBack={solveGameHandler}/>
+        </MenuRow>
+        <MenuRow>
+          <InstructionsButton/>
         </MenuRow>
       </RightMenu>
     </div>

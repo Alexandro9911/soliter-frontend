@@ -3,13 +3,15 @@ import React from "react";
 import {GameSolver} from "@/entities/gameSolver/GameSolver";
 import Game from "@/entities/game/Game";
 type Props = {
-  gameRef: React.MutableRefObject<Game>
+  gameRef: React.MutableRefObject<Game>,
+  callBack: Function
 }
-export default function SolveGameButton({gameRef}: Props){
+export default function SolveGameButton({gameRef, callBack}: Props){
 
   const handleSolveClick = () => {
     const gameSolver : GameSolver = new GameSolver(gameRef.current);
     const result = gameSolver.solve() || {moves: [], remaining: 0};
+    callBack(result);
     if (result.solution) {
       console.log("Полное решение найдено!");
       result.solution.forEach((move, i) => {
