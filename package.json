@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@rollup/plugin-alias": "^4.0.3",
+    "axios": "^1.10.0",
     "classnames": "^2.3.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
@@ -22,7 +23,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.8.1",
-    "redux": "^4.1.1",
+    "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "sass": "^1.58.1",

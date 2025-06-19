@@ -1,7 +1,6 @@
 import './gameLayout.sass'
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useRef, useState} from "react";
 import Game from "@/entities/game/Game";
-import Field from "@/entities/field/Field";
 import FieldComponent from "@/features/Field/FieldComponent";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";

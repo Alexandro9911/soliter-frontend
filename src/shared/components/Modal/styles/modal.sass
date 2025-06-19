@@ -1,0 +1,65 @@
+.modal
+  top: 0
+  left: 0
+  position: absolute
+  z-index: 1000
+  height: 100%
+  width: 100%
+  background: rgba(0, 0, 0, 0.4)
+  font-family: Arial
+
+  &__wrapper
+    display: flex
+    flex-flow: row
+    height: -webkit-fill-available
+    padding-top: 15px
+    overflow: auto
+    padding-bottom: 15px
+
+  &__card
+    margin: auto
+    padding: 36px
+    width: 700px
+    min-width: 700px
+    max-width: 700px
+    //max-height: 791px
+    background: #FFFFFF
+    border-radius: 8px 8px 8px 8px
+    z-index: 100
+
+    &__card-wrapper
+      position: relative
+
+
+    &__icon-close
+      position: absolute
+      right: -16px
+      top: -16px
+      cursor: pointer
+      margin-left: 100%
+
+      svg
+        width: 24px
+        height: 24px
+
+    &__title
+      font-weight: 700
+      font-size: 24px
+      line-height: 130%
+      color: #000000
+      margin-bottom: 24px
+      display: flex
+      flex-flow: row
+      align-items: center
+      gap: 16px
+
+    &__body
+      display: flex
+      flex-flow: column
+
+.is-hidden
+  display: none
+
+
+[data-simplebar] .simplebar-track.simplebar-vertical
+  right: -20px !important
