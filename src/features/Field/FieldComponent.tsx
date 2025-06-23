@@ -8,6 +8,7 @@ import {Point} from "@/entities/types/types";
 import classNames from "classnames";
 import React from "react";
 import ChipComponent from "@/features/Chip/ChipComponent";
+import EventBus from "@/shared/EventBus/EventBus";
 
 type Props = {
   game: Game,
@@ -27,6 +28,7 @@ export default function FieldComponent(
     accept: DRAG_TYPES.CHIP,
     drop: (item, monitor) => {
       makeStep(game.moveChip(item as Chip, field))
+      EventBus.getInstance().emit('BALL_PASTE');
     },
     collect: monitor => ({
       isOver: !!monitor.isOver(),

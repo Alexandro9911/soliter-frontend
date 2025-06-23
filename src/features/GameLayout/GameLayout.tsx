@@ -9,11 +9,11 @@ import RightMenu from "@/widgets/menu/rightMenu/RightMenu";
 import MenuRow from "@/widgets/menu/menuRow/MenuRow";
 import SolveGameButton from "@/features/SolveGameButton/SolveGameButton";
 import UndoMoveButton from "@/features/UndoMoveButton/UndoMoveButton";
-import {Solution, StepResult} from "@/entities/types/types";
+import { StepResult } from "@/entities/types/types";
 import RestartGameButton from "@/features/RestartGameButton/RestartGameButton";
-import BoardImage from '@/images/game-back.png';
+import BoardImage from '@/assets/images/game-back.png';
 import InstructionsButton from "@/features/InstructionsButton/InstructionsButton";
-import Chip from "@/entities/chip/Chip";
+import SoundPlayer from "@/shared/components/SoundPlayer/SoundPlayer";
 
 
 export default function GameLayout (){
@@ -35,22 +35,6 @@ export default function GameLayout (){
     setUpdateFlag(prev => !prev);
   }, []);
 
-  const undoHandler = useCallback(() => {
-    const prevState = undoManagerRef.current.getPrevState();
-    if (prevState) {
-      gameRef.current.setBoard(prevState);
-      setBoard(prevState);
-      setUpdateFlag(prev => !prev);
-    }
-  }, []);
-
-  const restartGameHandler = useCallback(() => {
-    const updatedBoard = gameRef.current.restartGame()
-    gameRef.current.setBoard(updatedBoard);
-    setBoard(updatedBoard);
-    setUpdateFlag(prev => !prev);
-  }, [])
-
   const createGameFields = useCallback(() => {
     return (
       <div className="list-cols">
@@ -70,35 +54,6 @@ export default function GameLayout (){
     );
   }, [board, updateFlag]);
 
-  const solveGameHandler = async (res: Solution) => {
-    const listSteps = res.solution ? res.solution : res.partialSolution;
-
-    if (!listSteps) {
-      return;
-    }
-
-    for (let index = 0; index < listSteps.length; index++) {
-      const item = listSteps[index];
-      const startCoords = item.from;
-      const targetCoords = item.to;
-      const board = gameRef.current.getBoard();
-
-      const movedChip = board[startCoords.x][startCoords.y].getChip();
-      const targetField = board[targetCoords.x][targetCoords.y];
-      const resStep = gameRef.current.moveChip(movedChip as Chip, targetField);
-
-      const updatedBoard = resStep.board;
-      gameRef.current.setBoard(updatedBoard);
-      undoManagerRef.current.saveState(updatedBoard);
-      setBoard(updatedBoard);
-      setUpdateFlag(prev => !prev);
-
-      if (index < listSteps.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    }
-  };
-
   return (
     <div className="main-layout">
       <div className="main-layout__game">
@@ -113,21 +68,33 @@ export default function GameLayout (){
       </div>
       <RightMenu>
         <MenuRow>
-          <RestartGameButton restartGameHandler={restartGameHandler}/>
-        </MenuRow>
-        <MenuRow>
-          <UndoMoveButton
-            undoHandler={undoHandler}
-            undoManagerRef={undoManagerRef}
+          <RestartGameButton
+            gameRef={gameRef}
+            setBoard={setBoard}
+            setUpdateFlag={setUpdateFlag}
           />
         </MenuRow>
         <MenuRow>
-          <SolveGameButton gameRef={gameRef} callBack={solveGameHandler}/>
+          <UndoMoveButton
+            undoManagerRef={undoManagerRef}
+            setUpdateFlag={setUpdateFlag}
+            gameRef={gameRef}
+            setBoard={setBoard}
+          />
+        </MenuRow>
+        <MenuRow>
+          <SolveGameButton
+            gameRef={gameRef}
+            setBoard={setBoard}
+            undoManagerRef={undoManagerRef}
+            setUpdateFlag={setUpdateFlag}
+          />
         </MenuRow>
         <MenuRow>
           <InstructionsButton/>
         </MenuRow>
       </RightMenu>
+      <SoundPlayer/>
     </div>
   );
 }

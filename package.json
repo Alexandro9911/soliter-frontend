@@ -28,7 +28,8 @@
     "redux-thunk": "^2.3.0",
     "sass": "^1.58.1",
     "sass-loader": "^12.1.0",
-    "scss": "^0.2.4"
+    "scss": "^0.2.4",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",

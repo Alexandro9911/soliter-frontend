@@ -2,7 +2,7 @@ import './chip.sass';
 import { useDrag } from "react-dnd";
 import { DRAG_TYPES } from "@/entities/constants";
 import Chip from "@/entities/chip/Chip";
-import ChipImage from '@/images/chip-image.png';
+import ChipImage from '@/assets/images/chip-image.png';
 import { useEffect, useRef } from "react";
 
 type Props = {
